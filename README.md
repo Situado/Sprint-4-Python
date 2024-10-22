@@ -55,7 +55,8 @@ Agregar comentarios descriptivos en el código para explicar su funcionalidad y 
 Asegurarse de que los parámetros proporcionados por el usuario sean válidos y manejar posibles errores de entrada. Optimización del Código: Considerar la optimización del código para cargar y procesar grandes conjuntos de datos de manera eficiente
 ---------------------------------------------------Manejo de Fechas y Formato CSV--------------------------------------------
 Asegurarse de que las fechas se manejen correctamente y se formateen adecuadamente al exportar a CSV.
----------------------------------------------------Ejemplo de archivo--------------------------------------------------------NroCheque,CodigoBanco,CodigoScurusal,NumeroCuentaOrigen,NumeroCuentaDestino,Valor,FechaOrigen,FechaPago,DNI,Estado
+---------------------------------------------------Ejemplo de archivo--------------------------------------------------------
+NroCheque,CodigoBanco,CodigoScurusal,NumeroCuentaOrigen,NumeroCuentaDestino,Valor,FechaOrigen,FechaPago,DNI,Estado
 │          │            │                │                    │               │        │           │     │     │ 
 │          │            │                │                    │               │        │           │     │     │ 
 │          │            │                │                    │               │        │           │     │     │
