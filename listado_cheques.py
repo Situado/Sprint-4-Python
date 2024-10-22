@@ -106,8 +106,29 @@ def ingresar_campos():
         else:
             print("Tipo de cheque no válido. Debe ser 'EMITIDO' o 'DEPOSITADO'.")
 
+    print("Cheque ingresado correctamente!")
     return cheque
 
 # Ejemplo de uso
-cheque_info = ingresar_campos()
-print(cheque_info)
+
+def ingresar_cheques():
+    cheques = []
+    while True:
+        try:
+            cantidad = int(input("Ingrese la cantidad de cheques a ingresar: "))
+            if cantidad > 0:
+                break
+            else:
+                print("La cantidad debe ser mayor a 0.")
+        except ValueError:
+            print("Por favor, ingrese un valor numérico válido.")
+    
+    for _ in range(cantidad):
+        cheques.append(ingresar_campos())
+    
+    return cheques
+
+# Ejemplo de uso
+cheques_info = ingresar_cheques()
+for cheque in cheques_info:
+    print(cheque)
