@@ -131,10 +131,8 @@ def ingresar_cheques():
     
     return cheques
 
-# Ejemplo de uso
+# Genero los cheques
 cheques_info = ingresar_cheques()
-# for cheque in cheques_info:
-#     print(cheque)
 
 # Función para guardar los cheques en un archivo CSV
 def guardar_cheques_csv(cheques, filename):
@@ -150,6 +148,5 @@ def guardar_cheques_csv(cheques, filename):
         dict_writer = csv.DictWriter(file, fieldnames=keys) # Crea el escritor de archivos CSV
         dict_writer.writeheader() # Escribe las claves como encabezado
         dict_writer.writerows(cheques) # Escribe los cheques en el archivo
-
 
 guardar_cheques_csv(cheques_info, 'cheques.csv') # Guarda los cheques en un archivo CSV

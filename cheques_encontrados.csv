@@ -1,2 +1,0 @@
-NroCheque,CodigoBanco,CodigoSucursal,NumeroCuentaOrigen,NumeroCuentaDestino,Valor,FechaOrigen,FechaPago,DNI,Estado,TipoCheque
-1,15,102,12345678,98765432,1500.5,1729393200,1730084400,12345678,aprobado,EMITIDO
