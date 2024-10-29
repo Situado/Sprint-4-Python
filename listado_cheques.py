@@ -1,134 +1,101 @@
-import datetime
+import csv
+from datetime import datetime
 
-def ingresar_campos():
-    cheque = {}
+def buscar_cheques(dni, tipo_cheque, estado, fecha_inicio, fecha_fin, archivo_csv):
+    cheques_encontrados = []
 
+    # Leer el archivo CSV
+    with open(archivo_csv, mode='r', newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+
+            # Convertir timestamps a objetos datetime
+            fecha_pago = datetime.fromtimestamp(int(row['FechaPago']))
+            fecha_origen = datetime.fromtimestamp(int(row['FechaOrigen']))
+
+            if (row['DNI'].strip() == dni
+                and row['TipoCheque'] == tipo_cheque 
+                and row['Estado'] == estado 
+                and ((fecha_inicio <= fecha_pago <= fecha_fin) or (fecha_inicio <= fecha_origen <= fecha_fin))
+                ):
+                    cheques_encontrados.append(row)
+    
+    return cheques_encontrados
+
+def main():
+    # Validar el nombre del archivo CSV
     while True:
-        try:
-            cheque['NroCheque'] = int(input("Ingrese el número de cheque (único por cuenta): "))
-            if cheque['NroCheque'] > 0:
-                break
-            else:
-                print("El numero del cheque debe ser mayor a 0.")
-        except ValueError:
-            print("Por favor, ingrese un valor numérico válido.")
-
-    while True:
-        try:
-            cheque['CodigoBanco'] = int(input("Ingrese el código del banco (1-100): "))
-            if 1 <= cheque['CodigoBanco'] <= 100:
-                break
-            else:
-                print("El código del banco debe estar entre 1 y 100.")
-        except ValueError:
-            print("Por favor, ingrese un número válido.")
-
-    while True:
-        try:
-            cheque['CodigoSucursal'] = int(input("Ingrese el código de la sucursal del banco (1-300): "))
-            if 1 <= cheque['CodigoSucursal'] <= 300:
-                break
-            else:
-                print("El código de la sucursal debe estar entre 1 y 300.")
-        except ValueError:
-            print("Por favor, ingrese un número válido.")
-
-    while True:
-        try:
-            cheque['NumeroCuentaOrigen'] = int(input("Ingrese el número de cuenta de origen: "))
-            if cheque['NumeroCuentaOrigen'] > 0:
-                break
-            else:
-                print("El numero de la Cuenta Origen debe ser mayor a 0.")
-        except ValueError:
-            print("Por favor, ingrese un valor numérico válido.")
-
-    while True:
-        try:
-            cheque['NumeroCuentaDestino'] = int(input("Ingrese el número de cuenta de destino: "))
-            if cheque['NumeroCuentaDestino'] > 0:
-                break
-            else:
-                print("El numero de la Cuenta Destino debe ser mayor a 0.")
-        except ValueError:
-            print("Por favor, ingrese un valor numérico válido.")
-
-    while True:
-        try:
-            cheque['Valor'] = float(input("Ingrese el valor del cheque: "))
-            if cheque['Valor'] > 0:
-                break
-            else:
-                print("El valor del cheque debe ser mayor a 0.")
-        except ValueError:
-            print("Por favor, ingrese un valor numérico válido.")
-
-    while True:
-        try:
-            fecha_origen = input("Ingrese la fecha de emisión (dd/mm/yyyy): ")
-            cheque['FechaOrigen'] = int(datetime.datetime.strptime(fecha_origen, "%d/%m/%Y").timestamp())
+        archivo_csv = input("Ingrese el nombre del archivo CSV que contiene la información de los cheques: ")
+        if archivo_csv == "cheques.csv":
             break
-        except ValueError:
-            print("Formato de fecha inválido. Use dd/mm/yyyy.")
+        else:
+            print("Nombre de archivo no válido.")
 
+    # Pedir al usuario que ingrese el DNI del cliente
     while True:
         try:
-            fecha_pago = input("Ingrese la fecha de pago (dd/mm/yyyy): ")
-            cheque['FechaPago'] = int(datetime.datetime.strptime(fecha_pago, "%d/%m/%Y").timestamp())
-            if cheque['FechaPago'] >= cheque['FechaOrigen']:
-                break
-            else:
-                print("La fecha de pago no puede ser anterior a la fecha de emisión.")
-        except ValueError:
-            print("Formato de fecha inválido. Use dd/mm/yyyy.")
-
-    while True:
-        try:
-            cheque['DNI'] = int(input("Ingrese el DNI del cliente: "))
-            if cheque['DNI'] > 0:
+            dni = input("Ingrese el DNI del cliente para buscar los cheques: ").strip()
+            if int(dni) > 0:
                 break
             else:
                 print("El numero de DNI debe ser mayor a 0.")
         except ValueError:
             print("Por favor, ingrese un valor numérico válido.")
 
+    # Pedir al usuario que ingrese el Tipo de Cheque
     while True:
-        cheque['Estado'] = input("Ingrese el estado del cheque (pendiente, aprobado, rechazado): ").lower()
-        if cheque['Estado'] in ['pendiente', 'aprobado', 'rechazado']:
-            break
-        else:
-            print("Estado no válido. Debe ser 'pendiente', 'aprobado' o 'rechazado'.")
-
-    while True:
-        cheque['TipoCheque'] = input("Ingrese el tipo de cheque (EMITIDO, DEPOSITADO): ").upper()
-        if cheque['TipoCheque'] in ['EMITIDO', 'DEPOSITADO']:
+        tipo_cheque = input("Ingrese el tipo de cheque (EMITIDO, DEPOSITADO): ").upper()
+        if tipo_cheque in ['EMITIDO', 'DEPOSITADO']:
             break
         else:
             print("Tipo de cheque no válido. Debe ser 'EMITIDO' o 'DEPOSITADO'.")
 
-    print("Cheque ingresado correctamente!")
-    return cheque
+    # Pedir al usuario que ingrese el Estado del Cheque
+    while True:
+        estado = input("Ingrese el estado del cheque (pendiente, aprobado, rechazado): ").lower()
+        if estado in ['pendiente', 'aprobado', 'rechazado']:
+            break
+        else:
+            print("Estado de cheque no válido. Debe ser 'pendiente', 'aprobado' o 'rechazado'.")
 
-# Ejemplo de uso
+    # Preguntar al usuario si desea filtrar por rango de fechas
+    filtrar_fechas = input("¿Desea filtrar por rango de fechas? (s/n): ").lower()
+    if filtrar_fechas == 's':       
+        fecha_inicio = datetime.strptime(input("Ingrese la fecha de inicio (YYYY-MM-DD): "), '%Y-%m-%d')
+        fecha_fin = datetime.strptime(input("Ingrese la fecha de fin (YYYY-MM-DD): "), '%Y-%m-%d')
+    else:
+        fecha_inicio = datetime.min
+        fecha_fin = datetime.max
 
-def ingresar_cheques():
-    cheques = []
+    # Buscar los cheques que coincidan con los criterios ingresados
+    cheques = buscar_cheques(dni, tipo_cheque, estado, fecha_inicio, fecha_fin, archivo_csv)
+
+    if not cheques:
+        print("No se encontraron cheques para los criterios ingresados.")
+        return
+
+    # Preguntar al usuario cómo quiere los resultados
     while True:
         try:
-            cantidad = int(input("Ingrese la cantidad de cheques a ingresar: "))
-            if cantidad > 0:
-                break
-            else:
-                print("La cantidad debe ser mayor a 0.")
-        except ValueError:
-            print("Por favor, ingrese un valor numérico válido.")
-    
-    for _ in range(cantidad):
-        cheques.append(ingresar_campos())
-    
-    return cheques
+            opcion = int(input("Ingrese 1 para guardar los resultados en un nuevo archivo CSV o 2 para imprimir en pantalla: "))
+            if opcion not in [1, 2]:
+                raise ValueError("Opción no válida. Debe ser 1 o 2.")
+            break
+        except ValueError as e:
+            print(e)
 
-# Ejemplo de uso
-cheques_info = ingresar_cheques()
-for cheque in cheques_info:
-    print(cheque)
+    # Procesar la opción elegida
+    if opcion == 1:
+        # Guardar los resultados en un nuevo archivo CSV
+        with open('cheques_encontrados.csv', mode='w', newline='') as file:
+            writer = csv.DictWriter(file, fieldnames=cheques[0].keys())
+            writer.writeheader()
+            writer.writerows(cheques)
+        print("Los resultados se han guardado en 'cheques_encontrados.csv'.")
+    elif opcion == 2:
+        # Imprimir los resultados en pantalla
+        for cheque in cheques:
+            print(cheque)
+
+if __name__ == "__main__":
+    main()
