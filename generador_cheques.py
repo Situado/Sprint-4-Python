@@ -3,9 +3,10 @@
 import datetime
 import csv
 
-def ingresar_campos():
-    cheque = {}
+def ingresar_campos(): # Función para ingresar los campos de un cheque
+    cheque = {} # Diccionario que almacenará los datos del cheque
 
+    # Validaciones de datos ingresados 
     while True:
         try:
             cheque['NroCheque'] = int(input("Ingrese el número de cheque (único por cuenta): "))
@@ -114,8 +115,8 @@ def ingresar_campos():
     print("Cheque ingresado correctamente!")
     return cheque
 
-def ingresar_cheques():
-    cheques = []
+def ingresar_cheques(): # Función para ingresar múltiples cheques
+    cheques = [] # Lista que almacenará los cheques
     while True:
         try:
             cantidad = int(input("Ingrese la cantidad de cheques a ingresar: "))
@@ -126,22 +127,20 @@ def ingresar_cheques():
         except ValueError:
             print("Por favor, ingrese un valor numérico válido.")
     
-    for _ in range(cantidad):
-        cheques.append(ingresar_campos())
+    for _ in range(cantidad): # Itera según la cantidad de cheques a ingresar
+        cheques.append(ingresar_campos()) # Agrega el cheque a la lista de cheques
     
     return cheques
 
-# Genero los cheques
-cheques_info = ingresar_cheques()
+cheques_info = ingresar_cheques() # Genero los cheques
 
-# Función para guardar los cheques en un archivo CSV
-def guardar_cheques_csv(cheques, filename):
+
+def guardar_cheques_csv(cheques, filename): # Función para guardar los cheques en un archivo CSV
     
-    # Define las claves de las columnas
     keys = [
         'NroCheque', 'CodigoBanco', 'CodigoSucursal', 'NumeroCuentaOrigen', 'NumeroCuentaDestino',
         'Valor', 'FechaOrigen', 'FechaPago', 'DNI', 'Estado', 'TipoCheque'
-    ]
+    ] # Define las claves de las columnas
 
     # Abre el archivo CSV en modo escritura
     with open(filename, 'w', newline='') as file: # newline='' evita que se agreguen líneas en blanco adicionales

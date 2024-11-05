@@ -4,24 +4,17 @@ import csv
 from datetime import datetime
 
 def buscar_cheques(dni, tipo_cheque, estado, fecha_inicio, fecha_fin, archivo_csv):
-    cheques_encontrados = []
+    cheques_encontrados = [] # Lista que almacenará los cheques encontrados
 
-    # Leer el archivo CSV
-    with open(archivo_csv, mode='r', newline='') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
+    with open(archivo_csv, mode='r', newline='') as file: # Leer el archivo CSV
+        reader = csv.DictReader(file) # Crear un objeto DictReader para leer el archivo
+        for row in reader: # Iterar sobre las filas del archivo
 
-            # Convertir timestamps a objetos datetime
+            # Convertir timestamps a objetos datetime para comparar fechas
             fecha_pago = datetime.fromtimestamp(int(row['FechaPago']))
             fecha_origen = datetime.fromtimestamp(int(row['FechaOrigen']))
 
-            if (row['DNI'].strip() == dni
-                and row['TipoCheque'] == tipo_cheque 
-                and row['Estado'] == estado 
-                and ((fecha_inicio <= fecha_pago <= fecha_fin) or (fecha_inicio <= fecha_origen <= fecha_fin))
-                ):
-                    cheques_encontrados.append(row)
-
+            # Comparar si los datos de cada cheque coinciden con los criterios de búsqueda
             if (row['DNI'].strip() == dni
                 and row['TipoCheque'] == tipo_cheque  
                 and ((fecha_inicio <= fecha_pago <= fecha_fin) or (fecha_inicio <= fecha_origen <= fecha_fin))
@@ -30,7 +23,17 @@ def buscar_cheques(dni, tipo_cheque, estado, fecha_inicio, fecha_fin, archivo_cs
                         cheques_encontrados.append(row)
                     elif estado == '':
                         cheques_encontrados.append(row)
-                    
+
+        
+    numeros_cheque = [cheque['NroCheque'] for cheque in cheques_encontrados] # Lista con los nros de cheque encontrados
+
+    if len(numeros_cheque) != len(set(numeros_cheque)): # Verificar si hay números de cheque repetidos
+
+        # len(numeros_cheque) devuelve la cantidad de elementos en la lista
+        # set(numeros_cheque) convierte la lista en un conjunto, eliminando los elementos duplicados
+        # len(set(numeros_cheque)) devuelve la cantidad de elementos ÚNICOS en la lista
+
+        print("Error: Se encontraron números de cheque repetidos para el DNI dado.")                    
     
     return cheques_encontrados
 
@@ -124,5 +127,5 @@ def main():
         for cheque in cheques:
             print(cheque)
 
-if __name__ == "__main__":
+if __name__ == "__main__": # Ejecutar el programa principal
     main()
